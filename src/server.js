@@ -2,6 +2,7 @@ const app = require('./app');
 const config = require('./shared/config');
 const logger = require('./infrastructure/logger');
 const { bootstrap } = require('./bootstrap');
+const cronJobs = require('./shared/utils/cronJobs');
 
 const PORT = config.app.port;
 
@@ -12,6 +13,9 @@ const startServer = async () => {
   try {
     // Bootstrap application
     await bootstrap();
+    
+    // Initialize cron jobs
+    cronJobs.initialize();
     
     // Start Express server
     const server = app.listen(PORT, () => {
