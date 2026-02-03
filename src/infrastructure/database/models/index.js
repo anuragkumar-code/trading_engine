@@ -1,13 +1,13 @@
 // Define associations
-const { User } = require('./User');
-const { KiteAccount } = require('./KiteAccount');
-const { Strategy } = require('./Strategy');
-const { SignalSource } = require('./SignalSource');
-const { TradeIntent } = require('./TradeIntent');
-const { Order } = require('./Order');
-const { RiskLimit } = require('./RiskLimit');
-const { AuditLog } = require('./AuditLog');
-const { SystemFlag } = require('./SystemFlag');
+const User = require('./User');
+const KiteAccount = require('./KiteAccount');
+const Strategy = require('./Strategy');
+const SignalSource = require('./SignalSource');
+const TradeIntent = require('./TradeIntent');
+const Order = require('./Order');
+const RiskLimit = require('./RiskLimit');
+const AuditLog = require('./AuditLog');
+const SystemFlag = require('./SystemFlag');
 
 const sequelize = require('../config');
 

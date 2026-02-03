@@ -1,5 +1,5 @@
 const express = require('express');
-const AuthController = require('../controller/auth.controller');
+const AuthController = require('../../auth/controller/auth.controller');
 const { validate } = require('../../../shared/middleware/validation');
 const { authenticate } = require('../../../shared/middleware/auth');
 const { asyncHandler } = require('../../../shared/middleware/errorHandler');
@@ -10,7 +10,7 @@ const {
   changePasswordSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-} = require('../validator/auth.validator');
+} = require('../../auth/validator/auth.validator');
 
 const router = express.Router();
 const authController = new AuthController();

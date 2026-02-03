@@ -3,4 +3,5 @@ module.exports = {
   errorHandler: require('./errorHandler'),
   rateLimit: require('./rateLimit'),
   validation: require('./validation'),
+  notFound: require('./notFound')
 };
