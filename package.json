@@ -10,36 +10,42 @@
     "migrate:undo": "sequelize-cli db:migrate:undo",
     "test": "jest --coverage"
   },
-  "keywords": ["trading", "automation", "zerodha", "kite"],
+  "keywords": [
+    "trading",
+    "automation",
+    "zerodha",
+    "kite"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.11.3",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.35.2",
-    "redis": "^4.6.12",
+    "axios": "^1.6.5",
+    "bcryptjs": "^2.4.3",
     "bullmq": "^5.1.5",
-    "winston": "^3.11.0",
-    "winston-daily-rotate-file": "^4.7.1",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^16.3.1",
-    "helmet": "^7.1.0",
-    "cors": "^2.8.5",
-    "express-rate-limit": "^7.1.5",
     "morgan": "^1.10.0",
-    "axios": "^1.6.5",
-    "crypto": "^1.0.1",
+    "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.64.0",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "rate-limit-redis": "^4.3.1",
+    "redis": "^4.7.1",
+    "sequelize": "^6.35.2",
     "uuid": "^9.0.1",
-    "node-cron": "^3.0.3"
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.0.2",
-    "sequelize-cli": "^6.6.2",
-    "jest": "^29.7.0"
+    "sequelize-cli": "^6.6.2"
   },
   "engines": {
     "node": ">=18.0.0"

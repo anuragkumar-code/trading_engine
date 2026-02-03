@@ -105,7 +105,7 @@ class AuthService {
       });
 
       if (!user) {
-        throw new UnauthorizedError('Invalid email or password');
+        throw new UnauthorizedError('Invalid email entered');
       }
 
       // Check if account is active
@@ -117,7 +117,7 @@ class AuthService {
       const isPasswordValid = await hash.comparePassword(password, user.password);
 
       if (!isPasswordValid) {
-        throw new UnauthorizedError('Invalid email or password');
+        throw new UnauthorizedError('Invalid password entered');
       }
 
       // Update last login
