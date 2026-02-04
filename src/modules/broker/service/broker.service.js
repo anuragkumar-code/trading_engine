@@ -6,6 +6,8 @@ const { auditQueue } = require('../../../infrastructure/queue');
 const logger = require('../../../infrastructure/logger');
 const axios = require('axios');
 const crypto = require('crypto');
+const qs = require('qs');
+
 const {
   BadRequestError,
   NotFoundError,
@@ -124,7 +126,10 @@ class BrokerService {
 
       // Decrypt API credentials
       const apiKey = encryption.decrypt(kiteAccount.apiKey);
-      
+      console.log("DECRYPTED API KEY:", apiKey);
+      console.log("KITE_SECRET:", config.app.kite.apiSecret);
+
+
       // Get API secret from config (since we only store hash)
       // Note: In production, user should provide API secret again for security
       const apiSecret = config.app.kite.apiSecret;
@@ -136,16 +141,32 @@ class BrokerService {
         .digest('hex');
 
       // Exchange request token for access token
+      // const response = await axios.post(           json payload is not being accepted by zerodha
+      //   this.kiteSessionUrl,
+      //   {
+      //     api_key: apiKey,
+      //     request_token: requestToken,
+      //     checksum: checksum,
+      //   },
+      //   {
+      //     headers: {
+      //       'X-Kite-Version': '3',
+      //     },
+      //   }
+      // );
+      const payload = qs.stringify({
+        api_key: apiKey,
+        request_token: requestToken,
+        checksum: checksum,
+      });
+
       const response = await axios.post(
         this.kiteSessionUrl,
-        {
-          api_key: apiKey,
-          request_token: requestToken,
-          checksum: checksum,
-        },
+        payload,
         {
           headers: {
             'X-Kite-Version': '3',
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
         }
       );
@@ -206,7 +227,12 @@ class BrokerService {
       };
 
     } catch (error) {
-      logger.error('Error generating Kite session:', error);
+      logger.error('Error generating Kite session:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+      // logger.error('Error generating Kite session:', error);
       
       if (error.response?.data) {
         throw new BadRequestError(
