@@ -1,0 +1,217 @@
+{
+  "info": {
+    "name": "Trading Engine - Auth API (Static)",
+    "_postman_id": "a1c9f7d2-5e44-4f31-9c2d-112233445566",
+    "description": "Authentication API Testing (No Variables, Fixed Token)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "register"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"staticuser@test.com\",\n  \"password\": \"Test@1234\",\n  \"confirmPassword\": \"Test@1234\",\n  \"firstName\": \"Static\",\n  \"lastName\": \"User\",\n  \"role\": \"TRADER\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Login User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"anurag@test.com\",\n  \"password\": \"Test@1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Refresh Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/refresh",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "refresh"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"PASTE_REFRESH_TOKEN_HERE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/profile",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "profile"]
+        }
+      }
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/profile",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "profile"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"User\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Change Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/change-password",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "change-password"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"currentPassword\": \"Test@1234\",\n  \"newPassword\": \"NewTest@1234\",\n  \"confirmPassword\": \"NewTest@1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Forgot Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/forgot-password",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "forgot-password"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"anurag@test.com\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/reset-password",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "reset-password"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"PASTE_RESET_TOKEN_HERE\",\n  \"password\": \"Reset@1234\",\n  \"confirmPassword\": \"Reset@1234\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/logout",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "auth", "logout"]
+        }
+      }
+    }
+  ]
+}

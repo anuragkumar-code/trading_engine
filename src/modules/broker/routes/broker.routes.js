@@ -1,118 +1,85 @@
 const express = require('express');
-const AuthController = require('../../auth/controller/auth.controller');
-const { validate } = require('../../../shared/middleware/validation');
+const BrokerController = require('../controller/broker.controller');
+
 const { authenticate } = require('../../../shared/middleware/auth');
+const { validate } = require('../../../shared/middleware/validation');
 const { asyncHandler } = require('../../../shared/middleware/errorHandler');
+
 const {
-  registerSchema,
-  loginSchema,
-  refreshTokenSchema,
-  changePasswordSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-} = require('../../auth/validator/auth.validator');
+  connectKiteSchema,
+  generateSessionSchema,
+  refreshKiteTokenSchema,
+  updateAccountStatusSchema,
+} = require('../validator/broker.validator');
 
 const router = express.Router();
-const authController = new AuthController();
+const brokerController = new BrokerController();
 
 /**
- * @route   POST /api/v1/auth/register
- * @desc    Register new user
- * @access  Public
+ * Connect Kite account (Step 1)
  */
 router.post(
-  '/register',
-  validate(registerSchema),
-  asyncHandler(authController.register)
-);
-
-/**
- * @route   POST /api/v1/auth/login
- * @desc    Login user
- * @access  Public
- */
-router.post(
-  '/login',
-  validate(loginSchema),
-  asyncHandler(authController.login)
-);
-
-/**
- * @route   POST /api/v1/auth/refresh
- * @desc    Refresh access token
- * @access  Public
- */
-router.post(
-  '/refresh',
-  validate(refreshTokenSchema),
-  asyncHandler(authController.refreshToken)
-);
-
-/**
- * @route   POST /api/v1/auth/logout
- * @desc    Logout user
- * @access  Private
- */
-router.post(
-  '/logout',
+  '/kite/connect',
   authenticate,
-  asyncHandler(authController.logout)
+  validate(connectKiteSchema),
+  asyncHandler(brokerController.connectKiteAccount)
 );
 
 /**
- * @route   POST /api/v1/auth/change-password
- * @desc    Change password
- * @access  Private
+ * Generate session (Step 2)
  */
 router.post(
-  '/change-password',
+  '/kite/session',
   authenticate,
-  validate(changePasswordSchema),
-  asyncHandler(authController.changePassword)
+  validate(generateSessionSchema),
+  asyncHandler(brokerController.generateSession)
 );
 
 /**
- * @route   POST /api/v1/auth/forgot-password
- * @desc    Request password reset
- * @access  Public
+ * Refresh Kite token
  */
 router.post(
-  '/forgot-password',
-  validate(forgotPasswordSchema),
-  asyncHandler(authController.forgotPassword)
+  '/kite/refresh',
+  authenticate,
+  validate(refreshKiteTokenSchema),
+  asyncHandler(brokerController.refreshKiteToken)
 );
 
 /**
- * @route   POST /api/v1/auth/reset-password
- * @desc    Reset password with token
- * @access  Public
- */
-router.post(
-  '/reset-password',
-  validate(resetPasswordSchema),
-  asyncHandler(authController.resetPassword)
-);
-
-/**
- * @route   GET /api/v1/auth/profile
- * @desc    Get user profile
- * @access  Private
+ * Check token status
  */
 router.get(
-  '/profile',
+  '/kite/token-status',
   authenticate,
-  asyncHandler(authController.getProfile)
+  asyncHandler(brokerController.checkTokenStatus)
 );
 
 /**
- * @route   PUT /api/v1/auth/profile
- * @desc    Update user profile
- * @access  Private
+ * Get Kite accounts
  */
-router.put(
-  '/profile',
+router.get(
+  '/kite/accounts',
   authenticate,
-  asyncHandler(authController.updateProfile)
+  asyncHandler(brokerController.getKiteAccounts)
+);
+
+/**
+ * Update account status
+ */
+router.patch(
+  '/kite/:kiteAccountId/status',
+  authenticate,
+  validate(updateAccountStatusSchema),
+  asyncHandler(brokerController.updateAccountStatus)
+);
+
+/**
+ * Disconnect account
+ */
+router.delete(
+  '/kite/:kiteAccountId',
+  authenticate,
+  asyncHandler(brokerController.disconnectKiteAccount)
 );
 
 module.exports = router;

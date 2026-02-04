@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "Trading Engine - Broker API",
+    "_postman_id": "c4a8f2d1-7e21-42a7-9e2a-9a2cbb7c1111",
+    "description": "Broker (Kite) API Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Connect Kite Account",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/connect",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "connect"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"your_kite_api_key\",\n  \"apiSecret\": \"your_kite_api_secret\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Generate Kite Session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/session",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "session"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestToken\": \"request_token_from_zerodha\",\n  \"kiteAccountId\": \"paste_kite_account_id_here\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Refresh Kite Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/refresh",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "refresh"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kiteAccountId\": \"paste_kite_account_id_here\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Check Token Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/token-status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "token-status"]
+        }
+      }
+    },
+    {
+      "name": "Get Kite Accounts",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/accounts",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "accounts"]
+        }
+      }
+    },
+    {
+      "name": "Update Account Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/YOUR_KITE_ACCOUNT_ID/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "YOUR_KITE_ACCOUNT_ID", "status"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Disconnect Kite Account",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTU3ZmUzMy1iNGExLTQ2MTUtYjAyMC02ZGFiNjkyODczNzEiLCJlbWFpbCI6ImFudXJhZ0B0ZXN0LmNvbSIsInJvbGUiOiJUUkFERVIiLCJpYXQiOjE3NzAxODczNTcsImV4cCI6MTc3MDI3Mzc1N30.B9ydRAyHjW3Tg6mSZqxH9Ajy2PvGg3FIRzyOCqc97-M"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/YOUR_KITE_ACCOUNT_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "YOUR_KITE_ACCOUNT_ID"]
+        }
+      }
+    }
+  ]
+}
