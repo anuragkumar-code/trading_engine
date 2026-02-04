@@ -13,7 +13,7 @@ const signalProcessor = async (job) => {
   logger.info(`Processing signal job ${job.id}`, { userId, source });
   
   if (!signalService) {
-    const { SignalService } = require('../modules/signal/service/signal.service');
+    const SignalService = require('../modules/signal/service/signal.service');
     signalService = new SignalService();
   }
   
@@ -35,7 +35,7 @@ const executionProcessor = async (job) => {
   logger.info(`Processing execution job ${job.id}`, { tradeIntentId });
   
   if (!executionService) {
-    const { ExecutionService } = require('../modules/execution/service/execution.service');
+    const ExecutionService = require('../modules/execution/service/execution.service');
     executionService = new ExecutionService();
   }
   
@@ -57,7 +57,7 @@ const riskProcessor = async (job) => {
   logger.info(`Processing risk check job ${job.id}`, { tradeIntentId, userId });
   
   if (!riskService) {
-    const { RiskService } = require('../modules/risk/service/risk.service');
+    const RiskService = require('../modules/risk/service/risk.service');
     riskService = new RiskService();
   }
   
@@ -79,7 +79,7 @@ const auditProcessor = async (job) => {
   logger.debug(`Processing audit job ${job.id}`);
   
   if (!auditService) {
-    const { AuditService } = require('../modules/audit/service/audit.service');
+    const AuditService = require('../modules/audit/service/audit.service');
     auditService = new AuditService();
   }
   
@@ -88,7 +88,8 @@ const auditProcessor = async (job) => {
     return { success: true };
   } catch (error) {
     logger.error(`Audit logging failed for job ${job.id}:`, error);
-    throw error;
+    // Don't throw - audit logging should never break the main flow
+    return { success: false, error: error.message };
   }
 };
 
