@@ -1,0 +1,181 @@
+{
+  "info": {
+    "name": "Trading Engine - Strategy Module",
+    "_postman_id": "c32fbb21-7788-4a11-9c44-889900112233",
+    "description": "Strategy management APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+
+    {
+      "name": "Get Strategy Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies/stats",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies","stats"]
+        }
+      }
+    },
+
+    {
+      "name": "Create Strategy",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Momentum Scalping V1\",\n  \"description\": \"Intraday momentum strategy\",\n  \"config\": {\n    \"maxPositionSize\": 10,\n    \"stopLossPercentage\": 1.5,\n    \"targetPercentage\": 4,\n    \"timeframe\": \"5m\",\n    \"productType\": \"MIS\",\n    \"orderType\": \"MARKET\",\n    \"exchanges\": [\"NSE\"],\n    \"symbols\": [\"RELIANCE\", \"TCS\"],\n    \"tradingHours\": {\n      \"start\": \"09:20\",\n      \"end\": \"15:10\"\n    },\n    \"riskPerTrade\": 1\n  },\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies"]
+        }
+      }
+    },
+
+    {
+      "name": "Get All Strategies",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies?limit=10&offset=0&sortBy=createdAt&sortOrder=DESC",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies"],
+          "query": [
+            { "key": "limit", "value": "10" },
+            { "key": "offset", "value": "0" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "DESC" }
+          ]
+        }
+      }
+    },
+
+    {
+      "name": "Get Strategy By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies/STRATEGY_ID_HERE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies","STRATEGY_ID_HERE"]
+        }
+      }
+    },
+
+    {
+      "name": "Update Strategy",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Momentum Scalping V2\",\n  \"description\": \"Updated version\",\n  \"config\": {\n    \"stopLossPercentage\": 2,\n    \"targetPercentage\": 5\n  },\n  \"status\": \"PAUSED\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies/STRATEGY_ID_HERE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies","STRATEGY_ID_HERE"]
+        }
+      }
+    },
+
+    {
+      "name": "Clone Strategy",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Momentum Scalping Clone\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies/STRATEGY_ID_HERE/clone",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies","STRATEGY_ID_HERE","clone"]
+        }
+      }
+    },
+
+    {
+      "name": "Delete Strategy",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/strategies/STRATEGY_ID_HERE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","strategies","STRATEGY_ID_HERE"]
+        }
+      }
+    }
+
+  ]
+}
