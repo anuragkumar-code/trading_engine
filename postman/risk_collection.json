@@ -1,0 +1,268 @@
+{
+  "info": {
+    "name": "Trading Engine - Risk Module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for Risk, Risk Limits, and Kill Switch APIs"
+  },
+  "item": [
+    {
+      "name": "Get Risk Summary",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/summary",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "summary"]
+        }
+      }
+    },
+
+    {
+      "name": "Get Risk Violations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/violations?limit=20&offset=0",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "violations"],
+          "query": [
+            { "key": "limit", "value": "20" },
+            { "key": "offset", "value": "0" }
+          ]
+        }
+      }
+    },
+
+    {
+      "name": "Create Risk Limit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"limitType\": \"DAILY_LOSS\",\n  \"value\": 2,\n  \"unit\": \"PERCENTAGE\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/limits",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "limits"]
+        }
+      }
+    },
+
+    {
+      "name": "Get Risk Limits",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/limits?limit=20&offset=0",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "limits"],
+          "query": [
+            { "key": "limit", "value": "20" },
+            { "key": "offset", "value": "0" }
+          ]
+        }
+      }
+    },
+
+    {
+      "name": "Get Risk Limit By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/limits/REPLACE_WITH_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "limits", "REPLACE_WITH_ID"]
+        }
+      }
+    },
+
+    {
+      "name": "Update Risk Limit",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"value\": 3,\n  \"unit\": \"PERCENTAGE\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/limits/REPLACE_WITH_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "limits", "REPLACE_WITH_ID"]
+        }
+      }
+    },
+
+    {
+      "name": "Delete Risk Limit",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/limits/REPLACE_WITH_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "limits", "REPLACE_WITH_ID"]
+        }
+      }
+    },
+
+    {
+      "name": "Get Kill Switch Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/killswitch/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "killswitch", "status"]
+        }
+      }
+    },
+
+    {
+      "name": "Enable Kill Switch",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"High risk exposure\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/killswitch/enable",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "killswitch", "enable"]
+        }
+      }
+    },
+
+    {
+      "name": "Disable Kill Switch",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/killswitch/disable",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "killswitch", "disable"]
+        }
+      }
+    },
+
+    {
+      "name": "Check Trade Intent (Manual Risk Check)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tradeIntentId\": \"REPLACE_WITH_UUID\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/risk/check",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "risk", "check"]
+        }
+      }
+    }
+  ]
+}
