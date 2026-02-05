@@ -1,0 +1,181 @@
+{
+  "info": {
+    "name": "Trading Engine - User Module",
+    "_postman_id": "a91d2d11-bb11-4a44-9c77-991122334455",
+    "description": "User management APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+
+    {
+      "name": "Get User Statistics (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ADMIN_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/stats",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users","stats"]
+        }
+      }
+    },
+
+    {
+      "name": "Get All Users (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ADMIN_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users?limit=10&offset=0&sortBy=createdAt&sortOrder=DESC",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users"],
+          "query": [
+            { "key": "limit", "value": "10" },
+            { "key": "offset", "value": "0" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "DESC" }
+          ]
+        }
+      }
+    },
+
+    {
+      "name": "Get User By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/USER_ID_HERE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users","USER_ID_HERE"]
+        }
+      }
+    },
+
+    {
+      "name": "Update User Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_TOKEN_HERE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Anurag\",\n  \"lastName\": \"Kumar\",\n  \"email\": \"anurag.updated@test.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/USER_ID_HERE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users","USER_ID_HERE"]
+        }
+      }
+    },
+
+    {
+      "name": "Update User Role (Admin)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ADMIN_TOKEN_HERE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"ADMIN\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/USER_ID_HERE/role",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users","USER_ID_HERE","role"]
+        }
+      }
+    },
+
+    {
+      "name": "Update User Status (Admin)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ADMIN_TOKEN_HERE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"INACTIVE\",\n  \"reason\": \"Violation of rules\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/USER_ID_HERE/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users","USER_ID_HERE","status"]
+        }
+      }
+    },
+
+    {
+      "name": "Delete User (Admin)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ADMIN_TOKEN_HERE"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/USER_ID_HERE",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api","v1","users","USER_ID_HERE"]
+        }
+      }
+    }
+
+  ]
+}

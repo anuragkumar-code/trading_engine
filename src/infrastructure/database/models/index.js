@@ -29,6 +29,8 @@ TradeIntent.belongsTo(SignalSource, { foreignKey: 'signalSourceId', as: 'signalS
 TradeIntent.belongsTo(Strategy, { foreignKey: 'strategyId', as: 'strategy' });
 TradeIntent.hasMany(Order, { foreignKey: 'tradeIntentId', as: 'orders' });
 
+Strategy.hasMany(TradeIntent, { foreignKey: 'strategyId', as: 'tradeIntents' });
+
 Order.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 Order.belongsTo(TradeIntent, { foreignKey: 'tradeIntentId', as: 'tradeIntent' });
 
