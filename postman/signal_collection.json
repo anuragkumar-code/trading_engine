@@ -1,0 +1,294 @@
+{
+  "info": {
+    "name": "Trading Engine - Signal Module",
+    "description": "Postman collection for Signal Sources, Webhooks, and Trade Intents",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN"
+    },
+    {
+      "key": "source_id",
+      "value": "SIGNAL_SOURCE_ID"
+    },
+    {
+      "key": "trade_intent_id",
+      "value": "TRADE_INTENT_ID"
+    }
+  ],
+  "item": [
+    {
+      "name": "Signal Sources",
+      "item": [
+        {
+          "name": "Create Signal Source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Telegram Signals\",\n  \"type\": \"TELEGRAM\",\n  \"config\": {\n    \"botToken\": \"123456:ABCDEF\",\n    \"chatId\": \"-100123456789\"\n  },\n  \"webhookSecret\": \"supersecretkeysupersecretkey123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/sources",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "sources"]
+            }
+          }
+        },
+        {
+          "name": "Get Signal Sources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/sources?status=ACTIVE&limit=20&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "sources"],
+              "query": [
+                { "key": "status", "value": "ACTIVE" },
+                { "key": "limit", "value": "20" },
+                { "key": "offset", "value": "0" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Signal Source By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/sources/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "sources", "{{source_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Signal Source",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Telegram Source\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/sources/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "sources", "{{source_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Signal Source",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/sources/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "sources", "{{source_id}}"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Signal Processing",
+      "item": [
+        {
+          "name": "Process Signal API",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"RELIANCE\",\n  \"exchange\": \"NSE\",\n  \"transactionType\": \"BUY\",\n  \"quantity\": 10,\n  \"orderType\": \"MARKET\",\n  \"productType\": \"MIS\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/process",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "process"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Telegram Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-telegram-bot-api-secret-token",
+                "value": "YOUR_SECRET"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": {\n    \"text\": \"BUY RELIANCE 10\",\n    \"chat\": {\n      \"id\": \"-100123456\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/webhooks/telegram/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "webhooks", "telegram", "{{source_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Google Sheets Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-webhook-secret",
+                "value": "YOUR_SECRET"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"TCS\",\n  \"exchange\": \"NSE\",\n  \"transactionType\": \"SELL\",\n  \"quantity\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/webhooks/sheets/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "webhooks", "sheets", "{{source_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Generic API Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-secret",
+                "value": "YOUR_SECRET"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"INFY\",\n  \"exchange\": \"NSE\",\n  \"transactionType\": \"BUY\",\n  \"quantity\": 20\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/webhooks/api/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "webhooks", "api", "{{source_id}}"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Trade Intents",
+      "item": [
+        {
+          "name": "Get Trade Intents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/intents?status=PENDING&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "intents"],
+              "query": [
+                { "key": "status", "value": "PENDING" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Trade Intent By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/signals/intents/{{trade_intent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "signals", "intents", "{{trade_intent_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
