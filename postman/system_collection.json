@@ -1,0 +1,284 @@
+{
+  "info": {
+    "name": "Trading Engine - System Module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for System Health, Flags, Metrics, and Maintenance APIs"
+  },
+  "item": [
+
+    {
+      "name": "Health Check (Basic)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "health"]
+        }
+      }
+    },
+
+    {
+      "name": "Health Check (Detailed)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/health?detailed=true",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "health"],
+          "query": [
+            { "key": "detailed", "value": "true" }
+          ]
+        }
+      }
+    },
+
+    {
+      "name": "System Info",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/info",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "info"]
+        }
+      }
+    },
+
+    {
+      "name": "Get System Config (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/config",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "config"]
+        }
+      }
+    },
+
+    {
+      "name": "Get System Metrics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/metrics?period=24h",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "metrics"],
+          "query": [
+            { "key": "period", "value": "24h" }
+          ]
+        }
+      }
+    },
+
+    {
+      "name": "Create System Flag",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"flagType\": \"KILL_SWITCH\",\n  \"enabled\": false,\n  \"reason\": \"Initial setup\",\n  \"metadata\": {}\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/flags",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "flags"]
+        }
+      }
+    },
+
+    {
+      "name": "Get All System Flags",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/flags",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "flags"]
+        }
+      }
+    },
+
+    {
+      "name": "Get System Flag By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/flags/REPLACE_WITH_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "flags", "REPLACE_WITH_ID"]
+        }
+      }
+    },
+
+    {
+      "name": "Update System Flag",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"enabled\": true,\n  \"reason\": \"Emergency disable\",\n  \"metadata\": {}\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/flags/REPLACE_WITH_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "flags", "REPLACE_WITH_ID"]
+        }
+      }
+    },
+
+    {
+      "name": "Delete System Flag",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/flags/REPLACE_WITH_ID",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "flags", "REPLACE_WITH_ID"]
+        }
+      }
+    },
+
+    {
+      "name": "Get Maintenance Status",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/maintenance",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "maintenance"]
+        }
+      }
+    },
+
+    {
+      "name": "Enable Maintenance Mode",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"enabled\": true,\n  \"reason\": \"Database upgrade\",\n  \"estimatedDuration\": 60\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/maintenance",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "maintenance"]
+        }
+      }
+    },
+
+    {
+      "name": "Disable Maintenance Mode",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_JWT_TOKEN"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"enabled\": false\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/system/maintenance",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "system", "maintenance"]
+        }
+      }
+    }
+
+  ]
+}
