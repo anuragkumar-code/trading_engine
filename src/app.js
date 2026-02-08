@@ -50,8 +50,8 @@ app.use('/api/v1/strategies', require('./modules/strategy').routes);
 app.use('/api/v1/risk', require('./modules/risk').routes);
 app.use('/api/v1/system', require('./modules/system').routes);
 
-// app.use('/api/v1/signals', require('./modules/signal').routes);
-// app.use('/api/v1/executions', require('./modules/execution').routes);
+app.use('/api/v1/signals', require('./modules/signal').routes);
+app.use('/api/v1/executions', require('./modules/execution').routes);
 
 
 // 404 handler
