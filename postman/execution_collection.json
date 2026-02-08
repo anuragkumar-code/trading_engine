@@ -1,0 +1,197 @@
+{
+  "info": {
+    "name": "Trading Engine - Execution Module",
+    "description": "Postman collection for Order Execution, Positions, Holdings, and Margins",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN"
+    },
+    {
+      "key": "order_id",
+      "value": "ORDER_UUID"
+    }
+  ],
+
+  "item": [
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/orders?status=COMPLETE&limit=20&offset=0&sortBy=createdAt&sortOrder=DESC",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "orders"],
+              "query": [
+                { "key": "status", "value": "COMPLETE" },
+                { "key": "limit", "value": "20" },
+                { "key": "offset", "value": "0" },
+                { "key": "sortBy", "value": "createdAt" },
+                { "key": "sortOrder", "value": "DESC" }
+              ]
+            }
+          }
+        },
+
+        {
+          "name": "Get Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "orders", "{{order_id}}"]
+            }
+          }
+        },
+
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/orders/{{order_id}}/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "orders", "{{order_id}}", "cancel"]
+            }
+          }
+        },
+
+        {
+          "name": "Get Order Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/orders/stats?startDate=2026-01-01&endDate=2026-02-01",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "orders", "stats"],
+              "query": [
+                { "key": "startDate", "value": "2026-01-01" },
+                { "key": "endDate", "value": "2026-02-01" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Positions & Portfolio",
+      "item": [
+        {
+          "name": "Get Positions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/positions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "positions"]
+            }
+          }
+        },
+
+        {
+          "name": "Exit Position",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"RELIANCE\",\n  \"exchange\": \"NSE\",\n  \"productType\": \"MIS\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/positions/exit",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "positions", "exit"]
+            }
+          }
+        },
+
+        {
+          "name": "Get Holdings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/holdings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "holdings"]
+            }
+          }
+        },
+
+        {
+          "name": "Get Margins",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/execution/margins",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "execution", "margins"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
