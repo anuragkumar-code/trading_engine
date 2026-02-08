@@ -391,7 +391,7 @@ class OrderService {
 
       return {
         success: true,
-        holdings: holdings.data,
+        holdings: holdings,
       };
 
     } catch (error) {
@@ -422,7 +422,7 @@ class OrderService {
 
       return {
         success: true,
-        margins: margins.data,
+        margins: margins,
       };
 
     } catch (error) {
