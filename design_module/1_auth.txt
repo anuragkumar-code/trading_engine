@@ -1,0 +1,54 @@
+You are building the Authentication module for a trading platform frontend.
+
+Tech:
+React + TS + Zustand + React Query + RHF + Zod + Tailwind + shadcn
+
+Implement:
+
+Feature: features/auth/
+
+Pages:
+- Login
+- Register
+- Reset Password
+- Reset Confirm
+- Profile
+
+Components:
+- LoginForm
+- RegisterForm
+- PasswordResetForm
+- ProfileCard
+- PasswordChangeForm
+
+Services:
+- authService.ts
+
+State:
+- authStore.ts
+
+Tasks:
+
+1. Implement forms with RHF + Zod
+2. JWT handling with Axios interceptors
+3. Protected routes
+4. Token refresh
+5. Role handling
+6. Persistent login
+7. Logout flow
+
+7. API Integration:
+POST /auth/login
+POST /auth/register
+POST /auth/refresh
+GET /auth/profile
+PUT /auth/profile
+
+Deliver:
+- Folder structure
+- Zod schemas
+- Forms
+- Store
+- Services
+- Routes
+- Sample UI

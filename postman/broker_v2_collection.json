@@ -1,0 +1,144 @@
+{
+  "info": {
+    "name": "Broker - Kite Integration",
+    "_postman_id": "f0c8c9e4-9a1a-4a6e-9c7b-9f5e1a4b1234",
+    "description": "Postman collection for testing Zerodha Kite broker integration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Initiate Kite Login (Step 1)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "login"]
+        }
+      }
+    },
+    {
+      "name": "Generate Kite Session (Step 2)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestToken\": \"PASTE_REQUEST_TOKEN_FROM_KITE_REDIRECT\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/session",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "session"]
+        }
+      }
+    },
+    {
+      "name": "Check Kite Token Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "status"]
+        }
+      }
+    },
+    {
+      "name": "Get Kite Account Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/account",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "account"]
+        }
+      }
+    },
+    {
+      "name": "Refresh Kite Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/refresh",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "refresh"]
+        }
+      }
+    },
+    {
+      "name": "Disconnect Kite Account",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/brokers/kite/disconnect",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "brokers", "kite", "disconnect"]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+Phase 2 – Broker Module (UI Only – Zerodha Kite)
+
+Build the Broker module UI for Zerodha Kite integration.
+This phase focuses only on frontend UI, routing, and user flow.
+No real API integration — simulate responses and states.
+
+Feature: features/broker/
+
+Pages:
+
+Connect Zerodha Account
+
+Zerodha Callback Handler
+
+Broker Dashboard
+
+Token Status Page
+
+Components:
+
+KiteConnectionCard
+
+Primary CTA: “Connect Zerodha Account”
+
+Explains secure login via Zerodha
+
+KiteSetupWizard
+
+Step 1: Initiate Connection
+
+Step 2: Zerodha Login (external)
+
+Step 3: Finalizing Connection (automatic)
+
+ZerodhaRedirectNotice
+
+Explains new-tab login behavior
+
+Security reassurance (read-only access, expires daily)
+
+KiteCallbackHandler
+
+Reads request_token from URL query
+
+Handles status=success | error
+
+Shows loading, success, or failure state
+
+Automatically advances flow
+
+TokenStatusBadge
+
+TokenExpiryTimer
+
+KiteAccountCard
+
+RefreshTokenButton
+
+DisconnectAccountButton
+
+UX Flow (UI Simulation Only):
+
+User clicks Connect Zerodha Account
+
+New tab opens Zerodha login URL
+
+User logs in successfully
+
+Zerodha redirects back to frontend root or callback page with:
+
+?status=success&request_token=...
+
+
+Frontend:
+
+Automatically captures request_token
+
+Shows “Finalizing connection…”
+
+On simulated success:
+
+Redirect user to Broker Dashboard
+
+No manual token handling anywhere.
+
+Routing:
+
+/broker/connect
+
+/broker/kite/callback (or root handler logic)
+
+/broker/dashboard
+
+/broker/status
+
+State (Mocked / UI-only):
+
+connectionStep
+
+callbackStatus (idle | loading | success | error)
+
+hasKiteAccount
+
+mockTokenExpiryTime
+
+mockLastLoginAt
+
+Tasks:
+
+Handle query params from URL
+
+New-tab login UX
+
+Automatic callback handling
+
+Loading → success → redirect flow
+
+Status-based rendering
+
+Clean error & retry UX
+
+Constraints:
+
+❌ No request_token input field
+
+❌ No manual copy-paste steps
+
+❌ No API key or secret shown
+
+✅ Fully automatic OAuth-style UX
+
+Deliverables:
+
+Pages
+
+Components
+
+Mocked services
+
+State handling
+
+Routing setup
+
+Polished UX transitions
+
+Final sanity check (important)
+
+What you’re building now matches:
+
+Zerodha’s intended integration model
+
+Industry-standard OAuth UX
+
+Real trading platform expectations

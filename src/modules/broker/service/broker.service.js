@@ -1,6 +1,6 @@
 const { KiteAccount } = require('../../../infrastructure/database/models');
 const { KiteClient } = require('../../../infrastructure/http');
-const { encryption, hash } = require('../../../shared/utils');
+const { encryption } = require('../../../shared/utils');
 const { cache } = require('../../../infrastructure/redis');
 const { auditQueue } = require('../../../infrastructure/queue');
 const logger = require('../../../infrastructure/logger');
@@ -22,80 +22,91 @@ class BrokerService {
     this.kiteLoginUrl = 'https://kite.zerodha.com/connect/login';
     this.kiteSessionUrl = 'https://api.kite.trade/session/token';
     this.tokenExpiryCache = 'kite_token_expiry:';
+    
+    // Platform-wide Kite API credentials (from env/config)
+    this.apiKey = config.app.kite.apiKey;
+    this.apiSecret = config.app.kite.apiSecret;
+
+    // Validate credentials on initialization
+    if (!this.apiKey || !this.apiSecret) {
+      logger.error('Kite API credentials not configured in environment');
+      throw new Error('KITE_API_KEY and KITE_API_SECRET must be set in environment variables');
+    }
+
+    logger.info('BrokerService initialized with platform Kite credentials');
   }
 
   /**
-   * Connect Kite account (Step 1: Store API credentials and generate login URL)
+   * Initiate Kite login (Step 1: Generate login URL)
    * @param {string} userId - User ID
-   * @param {string} apiKey - Kite API Key
-   * @param {string} apiSecret - Kite API Secret
    * @param {string} ip - IP address
-   * @returns {Promise<Object>} - Login URL and account details
+   * @returns {Promise<Object>} - Login URL and instructions
    */
-  async connectKiteAccount(userId, apiKey, apiSecret, ip = null) {
+  async initiateKiteLogin(userId, ip = null) {
     try {
-      logger.info(`Connecting Kite account for user: ${userId}`);
+      logger.info(`Initiating Kite login for user: ${userId}`);
 
       // Check if user already has an active Kite account
       const existingAccount = await KiteAccount.findOne({
-        where: {
-          userId,
-          status: 'ACTIVE',
-        },
+        where: { userId },
       });
 
-      if (existingAccount) {
-        throw new ConflictError('You already have an active Kite account connected');
+      if (existingAccount && existingAccount.status === 'ACTIVE') {
+        // Check if token is still valid
+        const now = new Date();
+        if (existingAccount.tokenExpiresAt && existingAccount.tokenExpiresAt > now) {
+          throw new ConflictError('You already have an active Kite session. Please wait for it to expire or disconnect first.');
+        }
       }
 
-      // Encrypt API credentials
-      const encryptedApiKey = encryption.encrypt(apiKey);
-      const apiSecretHash = hash.hashApiKey(apiSecret);
+      // Create or get inactive Kite account record
+      let kiteAccount;
+      if (existingAccount) {
+        kiteAccount = existingAccount;
+        await kiteAccount.update({ status: 'INACTIVE' });
+      } else {
+        kiteAccount = await KiteAccount.create({
+          userId,
+          status: 'INACTIVE',
+        });
+      }
 
-      // Store API credentials
-      const kiteAccount = await KiteAccount.create({
-        userId,
-        apiKey: encryptedApiKey,
-        apiSecretHash,
-        status: 'INACTIVE', // Will become ACTIVE after successful session generation
-      });
+      logger.info(`Kite account record prepared: ${kiteAccount.id}`);
 
-      logger.info(`Kite account credentials stored: ${kiteAccount.id}`);
-
-      // Generate login URL
-      const loginUrl = this.generateLoginUrl(apiKey);
+      // Generate login URL using platform API key
+      const loginUrl = this.generateLoginUrl();
 
       // Audit log
-      await auditQueue.add('kite_account_connected', {
+      await auditQueue.add('kite_login_initiated', {
         event: SYSTEM.AUDIT_EVENT.CONFIG_CHANGED,
         userId,
         source: 'BROKER',
         ip,
         payload: {
           kiteAccountId: kiteAccount.id,
-          action: 'KITE_CREDENTIALS_STORED',
+          action: 'KITE_LOGIN_INITIATED',
         },
         result: 'SUCCESS',
       });
 
       return {
         success: true,
-        message: 'Kite credentials stored. Please complete the login process.',
+        message: 'Kite login initiated. Please complete the login process.',
         kiteAccount: {
           id: kiteAccount.id,
           status: kiteAccount.status,
         },
         loginUrl,
         instructions: [
-          '1. Click on the login URL',
+          '1. Click on the login URL below',
           '2. Login to your Zerodha account',
           '3. After successful login, you will be redirected with a request_token',
-          '4. Use the request_token to generate session',
+          '4. Copy the request_token from the URL and use it to generate your session',
         ],
       };
 
     } catch (error) {
-      logger.error('Error connecting Kite account:', error);
+      logger.error('Error initiating Kite login:', error);
       throw error;
     }
   }
@@ -103,59 +114,38 @@ class BrokerService {
   /**
    * Generate session (Step 2: Exchange request token for access token)
    * @param {string} userId - User ID
-   * @param {string} kiteAccountId - Kite account ID
    * @param {string} requestToken - Request token from Kite redirect
    * @param {string} ip - IP address
    * @returns {Promise<Object>} - Session details
    */
-  async generateSession(userId, kiteAccountId, requestToken, ip = null) {
+  async generateSession(userId, requestToken, ip = null) {
     try {
-      logger.info(`Generating Kite session for account: ${kiteAccountId}`);
+      logger.info(`Generating Kite session for user: ${userId}`);
 
-      // Get Kite account
-      const kiteAccount = await KiteAccount.findOne({
-        where: {
-          id: kiteAccountId,
-          userId,
-        },
+      // Get or create Kite account
+      let kiteAccount = await KiteAccount.findOne({
+        where: { userId },
       });
 
       if (!kiteAccount) {
-        throw new NotFoundError('Kite account not found');
+        // Create if doesn't exist (edge case)
+        kiteAccount = await KiteAccount.create({
+          userId,
+          status: 'INACTIVE',
+        });
       }
-
-      // Decrypt API credentials
-      const apiKey = encryption.decrypt(kiteAccount.apiKey);
-      console.log("DECRYPTED API KEY:", apiKey);
-      console.log("KITE_SECRET:", config.app.kite.apiSecret);
-
-
-      // Get API secret from config (since we only store hash)
-      // Note: In production, user should provide API secret again for security
-      const apiSecret = config.app.kite.apiSecret;
 
       // Generate checksum: SHA-256(api_key + request_token + api_secret)
       const checksum = crypto
         .createHash('sha256')
-        .update(apiKey + requestToken + apiSecret)
+        .update(this.apiKey + requestToken + this.apiSecret)
         .digest('hex');
 
+      logger.info('Checksum generated for Kite session');
+
       // Exchange request token for access token
-      // const response = await axios.post(           json payload is not being accepted by zerodha
-      //   this.kiteSessionUrl,
-      //   {
-      //     api_key: apiKey,
-      //     request_token: requestToken,
-      //     checksum: checksum,
-      //   },
-      //   {
-      //     headers: {
-      //       'X-Kite-Version': '3',
-      //     },
-      //   }
-      // );
       const payload = qs.stringify({
-        api_key: apiKey,
+        api_key: this.apiKey,
         request_token: requestToken,
         checksum: checksum,
       });
@@ -172,18 +162,20 @@ class BrokerService {
       );
 
       if (!response.data || !response.data.data) {
-        throw new InternalServerError('Failed to generate session');
+        throw new InternalServerError('Failed to generate session with Kite');
       }
 
       const sessionData = response.data.data;
       const accessToken = sessionData.access_token;
       const refreshToken = sessionData.refresh_token || null;
 
-      // Encrypt tokens
+      logger.info('Kite session tokens received successfully');
+
+      // Encrypt tokens before storing
       const encryptedAccessToken = encryption.encrypt(accessToken);
       const encryptedRefreshToken = refreshToken ? encryption.encrypt(refreshToken) : null;
 
-      // Calculate token expiry (6 AM next day)
+      // Calculate token expiry (6 AM next day IST)
       const tokenExpiresAt = this.calculateTokenExpiry();
 
       // Update Kite account with tokens
@@ -192,9 +184,10 @@ class BrokerService {
         refreshToken: encryptedRefreshToken,
         tokenExpiresAt,
         status: 'ACTIVE',
+        lastLoginAt: new Date(),
       });
 
-      logger.info(`Kite session generated successfully for account: ${kiteAccount.id}`);
+      logger.info(`Kite session generated successfully for user: ${userId}`);
 
       // Store expiry time in cache for quick checks
       await this.cacheTokenExpiry(kiteAccount.id, tokenExpiresAt);
@@ -218,11 +211,12 @@ class BrokerService {
 
       return {
         success: true,
-        message: 'Kite session generated successfully',
+        message: 'Kite session generated successfully. You can now start trading!',
         kiteAccount: {
           id: kiteAccount.id,
           status: kiteAccount.status,
           tokenExpiresAt,
+          expiresIn: this.getTimeRemaining(tokenExpiresAt),
         },
       };
 
@@ -232,11 +226,10 @@ class BrokerService {
         status: error.response?.status,
         data: error.response?.data,
       });
-      // logger.error('Error generating Kite session:', error);
       
       if (error.response?.data) {
         throw new BadRequestError(
-          `Kite API Error: ${error.response.data.message || 'Failed to generate session'}`
+          `Kite API Error: ${error.response.data.message || 'Failed to generate session. Please check your request token.'}`
         );
       }
       
@@ -247,30 +240,23 @@ class BrokerService {
   /**
    * Refresh Kite token (User action when token expires)
    * @param {string} userId - User ID
-   * @param {string} kiteAccountId - Kite account ID
    * @param {string} ip - IP address
    * @returns {Promise<Object>} - New login URL
    */
-  async refreshKiteToken(userId, kiteAccountId, ip = null) {
+  async refreshKiteToken(userId, ip = null) {
     try {
-      logger.info(`Refreshing Kite token for account: ${kiteAccountId}`);
+      logger.info(`Refreshing Kite token for user: ${userId}`);
 
       const kiteAccount = await KiteAccount.findOne({
-        where: {
-          id: kiteAccountId,
-          userId,
-        },
+        where: { userId },
       });
 
       if (!kiteAccount) {
-        throw new NotFoundError('Kite account not found');
+        throw new NotFoundError('Kite account not found. Please initiate login first.');
       }
 
-      // Decrypt API key
-      const apiKey = encryption.decrypt(kiteAccount.apiKey);
-
       // Generate new login URL
-      const loginUrl = this.generateLoginUrl(apiKey);
+      const loginUrl = this.generateLoginUrl();
 
       // Mark account as expired
       await kiteAccount.update({
@@ -299,9 +285,10 @@ class BrokerService {
         },
         loginUrl,
         instructions: [
-          '1. Click on the login URL',
+          '1. Click on the login URL below',
           '2. Login to your Zerodha account',
-          '3. After successful login, use the request_token to generate new session',
+          '3. After successful login, copy the request_token from URL',
+          '4. Use the request_token to generate new session',
         ],
       };
 
@@ -312,56 +299,59 @@ class BrokerService {
   }
 
   /**
-   * Check if token is expired
+   * Check token status for user
    * @param {string} userId - User ID
    * @returns {Promise<Object>} - Token status
    */
   async checkTokenStatus(userId) {
     try {
       const kiteAccount = await KiteAccount.findOne({
-        where: {
-          userId,
-          status: 'ACTIVE',
-        },
+        where: { userId },
       });
 
       if (!kiteAccount) {
         return {
           success: true,
-          hasActiveAccount: false,
-          message: 'No active Kite account found',
+          hasAccount: false,
+          message: 'No Kite account found. Please initiate login.',
         };
       }
 
       const now = new Date();
-      const isExpired = kiteAccount.tokenExpiresAt <= now;
+      const isExpired = kiteAccount.tokenExpiresAt 
+        ? kiteAccount.tokenExpiresAt <= now 
+        : true;
 
-      if (isExpired) {
-        // Mark as expired
-        await kiteAccount.update({
-          status: 'EXPIRED',
-        });
+      if (isExpired && kiteAccount.status === 'ACTIVE') {
+        // Auto-mark as expired
+        await kiteAccount.update({ status: 'EXPIRED' });
 
         return {
           success: true,
-          hasActiveAccount: true,
+          hasAccount: true,
           isExpired: true,
+          status: 'EXPIRED',
           message: 'Token has expired. Please refresh your token.',
           kiteAccountId: kiteAccount.id,
         };
       }
 
       // Calculate time remaining
-      const timeRemaining = kiteAccount.tokenExpiresAt - now;
-      const hoursRemaining = Math.floor(timeRemaining / (1000 * 60 * 60));
+      const timeRemaining = kiteAccount.tokenExpiresAt 
+        ? this.getTimeRemaining(kiteAccount.tokenExpiresAt)
+        : null;
 
       return {
         success: true,
-        hasActiveAccount: true,
+        hasAccount: true,
         isExpired: false,
+        status: kiteAccount.status,
         expiresAt: kiteAccount.tokenExpiresAt,
-        hoursRemaining,
-        message: `Token is valid. Expires in ${hoursRemaining} hours.`,
+        timeRemaining,
+        lastLoginAt: kiteAccount.lastLoginAt,
+        message: kiteAccount.status === 'ACTIVE' 
+          ? `Token is valid. ${timeRemaining}` 
+          : 'Please generate a new session.',
       };
 
     } catch (error) {
@@ -371,87 +361,49 @@ class BrokerService {
   }
 
   /**
-   * Get user's Kite accounts
+   * Get user's Kite account
    * @param {string} userId - User ID
-   * @returns {Promise<Object>} - Kite accounts
+   * @returns {Promise<Object>} - Kite account details
    */
-  async getKiteAccounts(userId) {
+  async getKiteAccount(userId) {
     try {
-      const kiteAccounts = await KiteAccount.findAll({
-        where: { userId },
-        attributes: ['id', 'status', 'tokenExpiresAt', 'createdAt', 'updatedAt'],
-        order: [['createdAt', 'DESC']],
-      });
-
-      return {
-        success: true,
-        kiteAccounts: kiteAccounts.map(account => ({
-          id: account.id,
-          status: account.status,
-          tokenExpiresAt: account.tokenExpiresAt,
-          isExpired: account.tokenExpiresAt ? account.tokenExpiresAt <= new Date() : false,
-          createdAt: account.createdAt,
-          updatedAt: account.updatedAt,
-        })),
-      };
-
-    } catch (error) {
-      logger.error('Error getting Kite accounts:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Update Kite account status
-   * @param {string} userId - User ID
-   * @param {string} kiteAccountId - Kite account ID
-   * @param {string} status - New status
-   * @param {string} ip - IP address
-   * @returns {Promise<Object>}
-   */
-  async updateAccountStatus(userId, kiteAccountId, status, ip = null) {
-    try {
-      logger.info(`Updating Kite account status: ${kiteAccountId} to ${status}`);
-
       const kiteAccount = await KiteAccount.findOne({
-        where: {
-          id: kiteAccountId,
-          userId,
-        },
+        where: { userId },
+        attributes: ['id', 'status', 'tokenExpiresAt', 'lastLoginAt', 'createdAt', 'updatedAt'],
       });
 
       if (!kiteAccount) {
-        throw new NotFoundError('Kite account not found');
+        return {
+          success: true,
+          hasAccount: false,
+          message: 'No Kite account found',
+        };
       }
 
-      await kiteAccount.update({ status });
-
-      // Audit log
-      await auditQueue.add('kite_account_status_updated', {
-        event: SYSTEM.AUDIT_EVENT.CONFIG_CHANGED,
-        userId,
-        source: 'BROKER',
-        ip,
-        payload: {
-          kiteAccountId: kiteAccount.id,
-          action: 'STATUS_UPDATED',
-          oldStatus: kiteAccount.status,
-          newStatus: status,
-        },
-        result: 'SUCCESS',
-      });
+      const now = new Date();
+      const isExpired = kiteAccount.tokenExpiresAt 
+        ? kiteAccount.tokenExpiresAt <= now 
+        : true;
 
       return {
         success: true,
-        message: `Kite account ${status.toLowerCase()} successfully`,
+        hasAccount: true,
         kiteAccount: {
           id: kiteAccount.id,
           status: kiteAccount.status,
+          tokenExpiresAt: kiteAccount.tokenExpiresAt,
+          isExpired,
+          timeRemaining: kiteAccount.tokenExpiresAt 
+            ? this.getTimeRemaining(kiteAccount.tokenExpiresAt)
+            : null,
+          lastLoginAt: kiteAccount.lastLoginAt,
+          createdAt: kiteAccount.createdAt,
+          updatedAt: kiteAccount.updatedAt,
         },
       };
 
     } catch (error) {
-      logger.error('Error updating account status:', error);
+      logger.error('Error getting Kite account:', error);
       throw error;
     }
   }
@@ -459,19 +411,15 @@ class BrokerService {
   /**
    * Disconnect Kite account
    * @param {string} userId - User ID
-   * @param {string} kiteAccountId - Kite account ID
    * @param {string} ip - IP address
    * @returns {Promise<Object>}
    */
-  async disconnectKiteAccount(userId, kiteAccountId, ip = null) {
+  async disconnectKiteAccount(userId, ip = null) {
     try {
-      logger.info(`Disconnecting Kite account: ${kiteAccountId}`);
+      logger.info(`Disconnecting Kite account for user: ${userId}`);
 
       const kiteAccount = await KiteAccount.findOne({
-        where: {
-          id: kiteAccountId,
-          userId,
-        },
+        where: { userId },
       });
 
       if (!kiteAccount) {
@@ -482,7 +430,7 @@ class BrokerService {
       await kiteAccount.destroy();
 
       // Remove from cache
-      await cache.del(`${this.tokenExpiryCache}${kiteAccountId}`);
+      await cache.del(`${this.tokenExpiryCache}${kiteAccount.id}`);
 
       // Audit log
       await auditQueue.add('kite_account_disconnected', {
@@ -509,12 +457,11 @@ class BrokerService {
   }
 
   /**
-   * Generate Kite login URL
-   * @param {string} apiKey - API Key
+   * Generate Kite login URL using platform API key
    * @returns {string} - Login URL
    */
-  generateLoginUrl(apiKey) {
-    return `${this.kiteLoginUrl}?api_key=${apiKey}&v=3`;
+  generateLoginUrl() {
+    return `${this.kiteLoginUrl}?api_key=${this.apiKey}&v=3`;
   }
 
   /**
@@ -544,6 +491,29 @@ class BrokerService {
   }
 
   /**
+   * Get time remaining until expiry in human-readable format
+   * @param {Date} expiresAt - Expiry date
+   * @returns {string} - Time remaining
+   */
+  getTimeRemaining(expiresAt) {
+    const now = new Date();
+    const diff = expiresAt - now;
+
+    if (diff <= 0) {
+      return 'Expired';
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (hours > 0) {
+      return `Expires in ${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+    } else {
+      return `Expires in ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+    }
+  }
+
+  /**
    * Cache token expiry for quick checks
    * @param {string} kiteAccountId - Kite account ID
    * @param {Date} expiresAt - Expiry date
@@ -553,7 +523,7 @@ class BrokerService {
     const ttl = Math.floor((expiresAt - new Date()) / 1000);
     
     if (ttl > 0) {
-      await cache.set(key, { expiresAt }, ttl);
+      await cache.set(key, { expiresAt: expiresAt.toISOString() }, ttl);
     }
   }
 
@@ -568,13 +538,13 @@ class BrokerService {
     // Options:
     // 1. Schedule email/SMS notification 1 hour before expiry
     // 2. Create a notification record in database
-    // 3. Use a job scheduler (BullMQ delayed job)
+    // 3. Use BullMQ delayed job
     
-    logger.info(`Token expiry notification scheduled for account ${kiteAccountId} at ${expiresAt}`);
+    logger.info(`Token expiry notification scheduled for user ${userId} at ${expiresAt}`);
   }
 
   /**
-   * Auto-check and update expired tokens (to be run as cron job)
+   * Auto-check and update expired tokens (Cron job)
    * @returns {Promise<Object>} - Results
    */
   async checkAndUpdateExpiredTokens() {
@@ -598,9 +568,10 @@ class BrokerService {
         await account.update({ status: 'EXPIRED' });
         updatedCount++;
         
-        logger.warn(`Kite account ${account.id} marked as expired`);
+        logger.warn(`Kite account ${account.id} (userId: ${account.userId}) marked as expired`);
         
         // TODO: Send notification to user
+        // await notificationService.send(account.userId, 'KITE_TOKEN_EXPIRED', {...});
       }
 
       logger.info(`Updated ${updatedCount} expired Kite accounts`);

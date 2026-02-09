@@ -1,32 +1,35 @@
 const express = require('express');
 const BrokerController = require('../controller/broker.controller');
-
-const { authenticate } = require('../../../shared/middleware/auth');
 const { validate } = require('../../../shared/middleware/validation');
+const { authenticate } = require('../../../shared/middleware/auth');
 const { asyncHandler } = require('../../../shared/middleware/errorHandler');
-
 const {
-  connectKiteSchema,
+  initiateKiteLoginSchema,
   generateSessionSchema,
   refreshKiteTokenSchema,
-  updateAccountStatusSchema,
 } = require('../validator/broker.validator');
 
 const router = express.Router();
 const brokerController = new BrokerController();
 
+// ==================== Kite Integration Routes ====================
+
 /**
- * Connect Kite account (Step 1)
+ * @route   POST /api/v1/brokers/kite/login
+ * @desc    Initiate Kite login (Step 1) - Get login URL
+ * @access  Private
  */
 router.post(
-  '/kite/connect',
+  '/kite/login',
   authenticate,
-  validate(connectKiteSchema),
-  asyncHandler(brokerController.connectKiteAccount)
+  validate(initiateKiteLoginSchema),
+  asyncHandler(brokerController.initiateKiteLogin)
 );
 
 /**
- * Generate session (Step 2)
+ * @route   POST /api/v1/brokers/kite/session
+ * @desc    Generate Kite session (Step 2) - Exchange request_token for access_token
+ * @access  Private
  */
 router.post(
   '/kite/session',
@@ -36,7 +39,9 @@ router.post(
 );
 
 /**
- * Refresh Kite token
+ * @route   POST /api/v1/brokers/kite/refresh
+ * @desc    Refresh expired Kite token - Get new login URL
+ * @access  Private
  */
 router.post(
   '/kite/refresh',
@@ -46,38 +51,34 @@ router.post(
 );
 
 /**
- * Check token status
+ * @route   GET /api/v1/brokers/kite/status
+ * @desc    Check Kite token status
+ * @access  Private
  */
 router.get(
-  '/kite/token-status',
+  '/kite/status',
   authenticate,
-  asyncHandler(brokerController.checkTokenStatus)
+  asyncHandler(brokerController.getTokenStatus)
 );
 
 /**
- * Get Kite accounts
+ * @route   GET /api/v1/brokers/kite/account
+ * @desc    Get user's Kite account details
+ * @access  Private
  */
 router.get(
-  '/kite/accounts',
+  '/kite/account',
   authenticate,
-  asyncHandler(brokerController.getKiteAccounts)
+  asyncHandler(brokerController.getKiteAccount)
 );
 
 /**
- * Update account status
- */
-router.patch(
-  '/kite/:kiteAccountId/status',
-  authenticate,
-  validate(updateAccountStatusSchema),
-  asyncHandler(brokerController.updateAccountStatus)
-);
-
-/**
- * Disconnect account
+ * @route   DELETE /api/v1/brokers/kite/disconnect
+ * @desc    Disconnect Kite account
+ * @access  Private
  */
 router.delete(
-  '/kite/:kiteAccountId',
+  '/kite/disconnect',
   authenticate,
   asyncHandler(brokerController.disconnectKiteAccount)
 );

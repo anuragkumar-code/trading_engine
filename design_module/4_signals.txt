@@ -1,0 +1,35 @@
+Build Signal Sources & Trade Intents module.
+
+Feature: features/signals/
+
+Pages:
+- Sources list
+- Create source
+- Source details
+- Trade intents list
+- Intent details
+
+Components:
+- SignalSourceCard
+- SignalSourceForm
+- WebhookInfoCard
+- TradeIntentsList
+- TradeIntentStatusFlow
+
+Features:
+- Webhook info
+- Secret display
+- Intent filtering
+- Status flow
+
+API:
+POST /signals/sources
+GET /signals/sources
+POST /signals/process
+GET /signals/intents
+
+Deliver:
+- UI
+- Services
+- Hooks
+- Pagination

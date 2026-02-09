@@ -1,0 +1,38 @@
+Build Strategy management module.
+
+Feature: features/strategies/
+
+Pages:
+- List
+- Create
+- Edit
+- Details
+
+Components:
+- StrategyCard
+- StrategyForm
+- StrategyList
+- StrategyStatusBadge
+- StrategyCloneButton
+- StrategyStatsCard
+
+Features:
+- CRUD
+- Clone
+- Filters
+- Performance view
+
+API:
+GET /strategies
+POST /strategies
+PUT /strategies/:id
+DELETE /strategies/:id
+POST /strategies/:id/clone
+GET /strategies/stats
+
+Deliver:
+- Forms
+- Tables
+- Hooks
+- Zod schemas
+- Service
