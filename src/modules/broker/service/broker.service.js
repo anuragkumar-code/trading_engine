@@ -458,10 +458,15 @@ class BrokerService {
 
   /**
    * Generate Kite login URL using platform API key
-   * @returns {string} - Login URL
+   * @returns {string} - Login URL with redirect
    */
   generateLoginUrl() {
-    return `${this.kiteLoginUrl}?api_key=${this.apiKey}&v=3`;
+    const redirectUrl = config.app.kite.redirectUrl;
+    
+    // Important: URL encode the redirect URL
+    const encodedRedirectUrl = encodeURIComponent(redirectUrl);
+    
+    return `${this.kiteLoginUrl}?api_key=${this.apiKey}&v=3&redirect_params=${encodedRedirectUrl}`;
   }
 
   /**

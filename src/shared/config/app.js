@@ -19,6 +19,7 @@ module.exports = {
     apiKey: process.env.KITE_API_KEY,
     apiSecret: process.env.KITE_API_SECRET,
     baseUrl: process.env.KITE_BASE_URL || 'https://api.kite.trade',
+    redirectUrl: process.env.KITE_REDIRECT_URL || 'http://localhost:3000/broker/callback',
   },
   
   telegram: {
