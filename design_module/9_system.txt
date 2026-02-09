@@ -1,0 +1,28 @@
+Build System Administration module.
+
+Feature: features/system/
+
+Pages:
+- Dashboard
+- Config
+- Flags
+
+Components:
+- SystemHealthCard
+- MetricsGrid
+- MaintenanceToggle
+- LogsViewer
+
+Features:
+- Health checks
+- Metrics charts
+- Maintenance mode
+
+API:
+GET /system/health
+GET /system/config
+POST /system/maintenance
+
+Deliver:
+- Charts
+- Admin guards

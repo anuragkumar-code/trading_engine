@@ -1,0 +1,33 @@
+Build Risk Management module.
+
+Feature: features/risk/
+
+Pages:
+- Dashboard
+- Limits
+- Violations
+- Kill Switch
+
+Components:
+- RiskSummaryCard
+- RiskLimitForm
+- KillSwitchPanel
+- ViolationsList
+- RiskGauges
+
+Features:
+- Limits CRUD
+- Kill switch
+- Live metrics
+- Alerts
+
+API:
+GET /risk/summary
+POST /risk/limits
+GET /risk/violations
+POST /risk/killswitch
+
+Deliver:
+- Charts
+- Forms
+- State

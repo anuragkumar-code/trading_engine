@@ -1,0 +1,29 @@
+Build Audit module.
+
+Feature: features/audit/
+
+Pages:
+- Logs
+- Details
+- Timeline
+- Stats
+
+Components:
+- AuditLogsTable
+- AuditTimeline
+- AuditStatsCards
+- AuditExportButton
+
+Features:
+- Filters
+- Export
+- Timeline
+- Heatmap
+
+API:
+GET /audit/logs
+GET /audit/stats
+
+Deliver:
+- Charts
+- Export logic

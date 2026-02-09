@@ -1,0 +1,273 @@
+You are a senior frontend architect and design system engineer.
+
+Build the foundation of a production-grade trading platform frontend.
+
+Tech Stack:
+- React 18 + TypeScript
+- Vite
+- React Router v6
+- Zustand
+- TanStack Query
+- Tailwind CSS
+- shadcn/ui
+- Axios
+- Zod
+- React Hook Form
+- date-fns
+- react-hot-toast
+- framer-motion
+
+--------------------------------------------------
+1. PROJECT STRUCTURE
+--------------------------------------------------
+
+Create the full scalable folder structure:
+
+src/
+components/
+  ui/ (shadcn)
+  layout/
+  common/
+features/
+hooks/
+services/
+stores/
+utils/
+types/
+constants/
+routes/
+styles/
+
+--------------------------------------------------
+2. TAILWIND + SHADCN SETUP
+--------------------------------------------------
+
+Configure:
+
+- Tailwind with CSS variables
+- shadcn/ui integration
+- class-variance-authority
+- tailwind-merge
+- postcss
+- autoprefixer
+
+Provide:
+- tailwind.config.ts
+- globals.css
+- shadcn config
+
+--------------------------------------------------
+3. DESIGN SYSTEM
+--------------------------------------------------
+
+Implement full design tokens using CSS variables.
+
+Color System:
+
+Primary:   #3B82F6
+Success:   #10B981
+Warning:   #F59E0B
+Danger:    #EF4444
+Info:      #06B6D4
+Neutral:   Gray scale
+
+Status Colors:
+
+Order:
+PENDING → yellow
+SUBMITTED → blue
+OPEN → blue
+COMPLETE → green
+REJECTED → red
+CANCELLED → gray
+FAILED → red
+
+Kill Switch:
+Enabled → red (pulse)
+Disabled → green
+
+Token:
+Active → green
+Expiring → yellow
+Expired → red
+
+Define them as:
+
+--primary
+--success
+--warning
+--danger
+--info
+--muted
+--background
+--foreground
+--border
+
+in :root and .dark.
+
+--------------------------------------------------
+4. THEME SYSTEM
+--------------------------------------------------
+
+Implement:
+
+- Light mode
+- Dark mode
+- System preference
+- Theme toggle
+
+Using:
+- next-themes style approach (even in Vite)
+- localStorage persistence
+
+Create:
+- ThemeProvider
+- ThemeToggle component
+
+--------------------------------------------------
+5. TYPOGRAPHY
+--------------------------------------------------
+
+Configure:
+
+Font:
+- Inter (default)
+- JetBrains Mono (code)
+
+Sizes:
+- Heading scale
+- Body scale
+- Small text
+
+Provide:
+- Font imports
+- Tailwind config
+- Utility classes
+
+--------------------------------------------------
+6. BASE UI PRIMITIVES (SHADCN)
+--------------------------------------------------
+
+Install and configure:
+
+- Button (variants)
+- Input
+- Select
+- Badge
+- Card
+- Table
+- Dialog
+- Tabs
+- Tooltip
+- Alert
+- Skeleton
+- Dropdown
+- Pagination
+
+Customize variants for:
+
+Primary
+Secondary
+Destructive
+Success
+Warning
+Outline
+Ghost
+
+--------------------------------------------------
+7. LAYOUT SYSTEM
+--------------------------------------------------
+
+Create:
+
+- MainLayout
+- AuthLayout
+- DashboardLayout
+- Sidebar
+- Header
+- Footer
+- Breadcrumbs
+
+With:
+- Responsive behavior
+- Collapsible sidebar
+- Mobile support
+
+--------------------------------------------------
+8. STATE + API LAYER
+--------------------------------------------------
+
+Implement:
+
+Axios:
+- Base client
+- Auth interceptor
+- Refresh interceptor
+- Error handler
+
+Zustand:
+- authStore
+- uiStore
+- cacheStore
+
+React Query:
+- queryClient
+- retry logic
+- invalidation helpers
+
+--------------------------------------------------
+9. ROUTING
+--------------------------------------------------
+
+Implement:
+
+- Public routes
+- Protected routes
+- Admin routes
+- Redirect logic
+
+Create:
+- routes.tsx
+- ProtectedRoute
+- RoleGuard
+
+--------------------------------------------------
+10. GLOBAL UX
+--------------------------------------------------
+
+Implement:
+
+- Toast system
+- Global loader
+- Error boundary
+- Empty state
+- Loading skeleton
+
+--------------------------------------------------
+11. CODE TEMPLATES
+--------------------------------------------------
+
+Provide templates for:
+
+- Feature module
+- Service
+- Hook
+- Component
+- Form
+
+--------------------------------------------------
+12. DELIVERABLES
+--------------------------------------------------
+
+Deliver:
+
+- Folder tree
+- Key config files
+- Tailwind config
+- globals.css
+- Theme provider
+- Layout components
+- Example pages
+- Documentation comments
+
+Explain architectural decisions.

@@ -1,0 +1,37 @@
+Build Execution module.
+
+Feature: features/execution/
+
+Pages:
+- Orders
+- Order Details
+- Positions
+- Holdings
+- Margins
+
+Components:
+- OrdersTable
+- OrderStatusBadge
+- CancelOrderButton
+- PositionsList
+- ExitPositionButton
+- MarginCard
+
+Features:
+- Filters
+- Polling
+- Cancel flow
+- P&L
+- Stats
+
+API:
+GET /execution/orders
+POST /execution/orders/:id/cancel
+GET /execution/positions
+GET /execution/holdings
+GET /execution/margins
+
+Deliver:
+- Tables
+- Polling hooks
+- Modals

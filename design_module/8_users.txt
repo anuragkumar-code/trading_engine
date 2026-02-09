@@ -1,0 +1,29 @@
+Build User Management module.
+
+Feature: features/users/
+
+Pages:
+- Users list
+- User details
+- Profile
+
+Components:
+- UsersTable
+- UserCard
+- RoleBadge
+- StatusBadge
+- UpdateRoleModal
+
+Features:
+- Admin controls
+- Filters
+- Stats
+
+API:
+GET /users
+PUT /users/:id/role
+PUT /users/:id/status
+
+Deliver:
+- RBAC
+- Modals

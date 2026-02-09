@@ -7,22 +7,19 @@ class BrokerController {
   }
 
   /**
-   * Connect Kite account (Step 1)
-   * POST /api/v1/brokers/kite/connect
+   * Initiate Kite login (Step 1)
+   * POST /api/v1/brokers/kite/login
    */
-  connectKiteAccount = async (req, res, next) => {
+  initiateKiteLogin = async (req, res, next) => {
     try {
-      const { apiKey, apiSecret } = req.body;
       const ip = req.ip || req.connection.remoteAddress;
 
-      const result = await this.brokerService.connectKiteAccount(
+      const result = await this.brokerService.initiateKiteLogin(
         req.userId,
-        apiKey,
-        apiSecret,
         ip
       );
 
-      res.status(201).json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -34,12 +31,11 @@ class BrokerController {
    */
   generateSession = async (req, res, next) => {
     try {
-      const { requestToken, kiteAccountId } = req.body;
+      const { requestToken } = req.body;
       const ip = req.ip || req.connection.remoteAddress;
 
       const result = await this.brokerService.generateSession(
         req.userId,
-        kiteAccountId,
         requestToken,
         ip
       );
@@ -56,12 +52,10 @@ class BrokerController {
    */
   refreshKiteToken = async (req, res, next) => {
     try {
-      const { kiteAccountId } = req.body;
       const ip = req.ip || req.connection.remoteAddress;
 
       const result = await this.brokerService.refreshKiteToken(
         req.userId,
-        kiteAccountId,
         ip
       );
 
@@ -72,10 +66,10 @@ class BrokerController {
   };
 
   /**
-   * Check token status
-   * GET /api/v1/brokers/kite/token-status
+   * Get token status
+   * GET /api/v1/brokers/kite/status
    */
-  checkTokenStatus = async (req, res, next) => {
+  getTokenStatus = async (req, res, next) => {
     try {
       const result = await this.brokerService.checkTokenStatus(req.userId);
 
@@ -86,35 +80,12 @@ class BrokerController {
   };
 
   /**
-   * Get Kite accounts
-   * GET /api/v1/brokers/kite/accounts
+   * Get Kite account details
+   * GET /api/v1/brokers/kite/account
    */
-  getKiteAccounts = async (req, res, next) => {
+  getKiteAccount = async (req, res, next) => {
     try {
-      const result = await this.brokerService.getKiteAccounts(req.userId);
-
-      res.status(200).json(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  /**
-   * Update account status
-   * PATCH /api/v1/brokers/kite/:kiteAccountId/status
-   */
-  updateAccountStatus = async (req, res, next) => {
-    try {
-      const { kiteAccountId } = req.params;
-      const { status } = req.body;
-      const ip = req.ip || req.connection.remoteAddress;
-
-      const result = await this.brokerService.updateAccountStatus(
-        req.userId,
-        kiteAccountId,
-        status,
-        ip
-      );
+      const result = await this.brokerService.getKiteAccount(req.userId);
 
       res.status(200).json(result);
     } catch (error) {
@@ -124,16 +95,14 @@ class BrokerController {
 
   /**
    * Disconnect Kite account
-   * DELETE /api/v1/brokers/kite/:kiteAccountId
+   * DELETE /api/v1/brokers/kite/disconnect
    */
   disconnectKiteAccount = async (req, res, next) => {
     try {
-      const { kiteAccountId } = req.params;
       const ip = req.ip || req.connection.remoteAddress;
 
       const result = await this.brokerService.disconnectKiteAccount(
         req.userId,
-        kiteAccountId,
         ip
       );
 

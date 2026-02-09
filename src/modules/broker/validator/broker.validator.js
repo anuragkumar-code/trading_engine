@@ -22,37 +22,35 @@ const connectKiteSchema = Joi.object({
 });
 
 /**
+ * Initiate Kite login validation schema
+ * No input needed - just trigger login URL generation
+ */
+const initiateKiteLoginSchema = Joi.object({
+  // No body parameters needed
+});
+
+/**
  * Generate session validation schema
+ * @body {string} requestToken - Request token from Kite redirect URL
  */
 const generateSessionSchema = Joi.object({
   requestToken: Joi.string()
     .required()
     .trim()
+    .min(10)
     .messages({
+      'string.empty': 'Request token is required',
+      'string.min': 'Invalid request token format',
       'any.required': 'Request token is required',
-      'string.empty': 'Request token cannot be empty',
-    }),
-  
-  kiteAccountId: Joi.string()
-    .uuid()
-    .required()
-    .messages({
-      'any.required': 'Kite account ID is required',
-      'string.guid': 'Invalid Kite account ID format',
     }),
 });
 
 /**
- * Refresh token validation schema
+ * Refresh Kite token validation schema
+ * No input needed - just trigger new login URL
  */
 const refreshKiteTokenSchema = Joi.object({
-  kiteAccountId: Joi.string()
-    .uuid()
-    .required()
-    .messages({
-      'any.required': 'Kite account ID is required',
-      'string.guid': 'Invalid Kite account ID format',
-    }),
+  // No body parameters needed
 });
 
 /**
@@ -70,6 +68,7 @@ const updateAccountStatusSchema = Joi.object({
 
 module.exports = {
   connectKiteSchema,
+  initiateKiteLoginSchema,
   generateSessionSchema,
   refreshKiteTokenSchema,
   updateAccountStatusSchema,

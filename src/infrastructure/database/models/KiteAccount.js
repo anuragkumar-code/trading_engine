@@ -14,14 +14,7 @@ const KiteAccount = sequelize.define('KiteAccount', {
       model: 'users',
       key: 'id',
     },
-  },
-  apiKey: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  apiSecretHash: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    onDelete: 'CASCADE',
   },
   accessToken: {
     type: DataTypes.TEXT,
