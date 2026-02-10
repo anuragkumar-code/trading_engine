@@ -14,12 +14,14 @@ module.exports = {
     key: process.env.ENCRYPTION_KEY,
     algorithm: process.env.ENCRYPTION_ALGORITHM || 'aes-256-gcm',
   },
+
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:8081',
   
   kite: {
     apiKey: process.env.KITE_API_KEY,
     apiSecret: process.env.KITE_API_SECRET,
     baseUrl: process.env.KITE_BASE_URL || 'https://api.kite.trade',
-    redirectUrl: process.env.KITE_REDIRECT_URL || 'http://localhost:3000/broker/callback',
+    redirectUrl: process.env.KITE_REDIRECT_URL || 'http://localhost:8081/broker/callback',
   },
   
   telegram: {

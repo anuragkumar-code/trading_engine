@@ -26,11 +26,17 @@ class BrokerService {
     // Platform-wide Kite API credentials (from env/config)
     this.apiKey = config.app.kite.apiKey;
     this.apiSecret = config.app.kite.apiSecret;
+    this.redirectUrl = config.app.kite.redirectUrl;
 
     // Validate credentials on initialization
     if (!this.apiKey || !this.apiSecret) {
       logger.error('Kite API credentials not configured in environment');
       throw new Error('KITE_API_KEY and KITE_API_SECRET must be set in environment variables');
+    }
+
+    if (!this.redirectUrl) {
+      logger.error('Kite redirect URL not configured');
+      throw new Error('KITE_REDIRECT_URL must be set in environment variables');
     }
 
     logger.info('BrokerService initialized with platform Kite credentials');
@@ -164,7 +170,7 @@ class BrokerService {
       if (!response.data || !response.data.data) {
         throw new InternalServerError('Failed to generate session with Kite');
       }
-
+      // console.log(response.data);
       const sessionData = response.data.data;
       const accessToken = sessionData.access_token;
       const refreshToken = sessionData.refresh_token || null;
@@ -461,12 +467,13 @@ class BrokerService {
    * @returns {string} - Login URL with redirect
    */
   generateLoginUrl() {
-    const redirectUrl = config.app.kite.redirectUrl;
+    const loginUrl = `${this.kiteLoginUrl}?api_key=${this.apiKey}&v=3&redirect_params=${this.redirectUrl}`;
     
-    // Important: URL encode the redirect URL
-    const encodedRedirectUrl = encodeURIComponent(redirectUrl);
+    logger.info('Generated Kite login URL', { 
+      loginUrl: loginUrl.replace(this.apiKey, 'XXX')
+    });
     
-    return `${this.kiteLoginUrl}?api_key=${this.apiKey}&v=3&redirect_params=${encodedRedirectUrl}`;
+    return loginUrl;
   }
 
   /**

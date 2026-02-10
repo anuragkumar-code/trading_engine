@@ -29,6 +29,11 @@ const KiteAccount = sequelize.define('KiteAccount', {
     type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'EXPIRED'),
     defaultValue: 'ACTIVE',
   },
+  lastLoginAt: {
+    type: DataTypes.DATE,
+    field: 'last_login_at',
+  }
+
 }, {
   tableName: 'kite_accounts',
   underscored: true,
