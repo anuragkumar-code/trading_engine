@@ -2,6 +2,7 @@ module.exports = {
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT, 10) || 3000,
   appName: process.env.APP_NAME || 'TradingEngine',
+  timezone: process.env.APP_TIMEZONE || 'Asia/Kolkata',
   
   jwt: {
     secret: process.env.JWT_SECRET,

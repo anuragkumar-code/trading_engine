@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const logger = require('../../infrastructure/logger');
 const BrokerService = require('../../modules/broker/service/broker.service');
+const config = require('../config');
 
 class CronJobs {
   constructor() {
@@ -37,7 +38,7 @@ class CronJobs {
       }
     }, {
       scheduled: true,
-      timezone: 'Asia/Kolkata', // IST timezone
+      timezone: config.app.timezone,
     });
 
     this.jobs.push({
