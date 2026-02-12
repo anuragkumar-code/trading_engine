@@ -18,6 +18,9 @@ module.exports = {
       underscored: true,
       underscoredAll: true,
     },
+    // DB/session timezone for read/write rendering
+    timezone: process.env.DB_TIMEZONE_OFFSET || '+05:30',
+    timezoneName: process.env.DB_TIMEZONE_NAME || 'Asia/Kolkata',
   },
   production: {
     username: process.env.DB_USER,
@@ -38,5 +41,8 @@ module.exports = {
       underscored: true,
       underscoredAll: true,
     },
+    // DB/session timezone for read/write rendering
+    timezone: process.env.DB_TIMEZONE_OFFSET || '+05:30',
+    timezoneName: process.env.DB_TIMEZONE_NAME || 'Asia/Kolkata',
   },
 };
