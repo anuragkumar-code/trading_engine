@@ -1,5 +1,7 @@
 const express = require('express');
 const SignalController = require('../controller/signal.controller');
+const MockSignalController = require('../controller/mocksignal.controller');
+const { createMockSignalSchema } = require('../validator/mocksignal.validator');
 const { validate } = require('../../../shared/middleware/validation');
 const { authenticate } = require('../../../shared/middleware/auth');
 const { asyncHandler } = require('../../../shared/middleware/errorHandler');
@@ -18,6 +20,7 @@ const {
 
 const router = express.Router();
 const signalController = new SignalController();
+const mockSignalController = new MockSignalController();
 
 // ==================== Signal Sources Routes ====================
 
@@ -152,4 +155,28 @@ router.get(
   asyncHandler(signalController.getTradeIntentById)
 );
 
+// ==================== Mock Signal Routes (Testing) ====================
+
+/**
+ * @route   GET /api/v1/signals/mock/templates
+ * @desc    Get pre-defined signal templates for quick testing
+ * @access  Private
+ */
+router.get(
+  '/mock/templates',
+  authenticate,
+  asyncHandler(mockSignalController.getSignalTemplates)
+);
+
+/**
+ * @route   POST /api/v1/signals/mock
+ * @desc    Create mock signal for testing (bypasses external sources)
+ * @access  Private
+ */
+router.post(
+  '/mock',
+  authenticate,
+  validate(createMockSignalSchema),
+  asyncHandler(mockSignalController.createMockSignal)
+);
 module.exports = router;
