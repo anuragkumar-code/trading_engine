@@ -39,9 +39,34 @@ class KiteClient {
    * @param {Object} orderParams - Order parameters
    * @returns {Promise<Object>} - Order response
    */
+  // async placeOrder(orderParams) {
+  //   try {
+  //     const response = await this.client.post('/orders/regular', {
+  //       exchange: orderParams.exchange,
+  //       tradingsymbol: orderParams.symbol,
+  //       transaction_type: orderParams.transactionType,
+  //       order_type: orderParams.orderType,
+  //       product: orderParams.productType,
+  //       quantity: orderParams.quantity,
+  //       price: orderParams.price,
+  //       trigger_price: orderParams.triggerPrice,
+  //       validity: orderParams.validity || 'DAY',
+  //       disclosed_quantity: 0,
+  //       tag: orderParams.tag || 'TradingEngine',
+  //     });
+
+  //     return response.data;
+  //   } catch (error) {
+  //     throw new OrderExecutionError(
+  //       `Failed to place order: ${error.message}`,
+  //       'ORDER_PLACEMENT_FAILED',
+  //       error.response?.data
+  //     );
+  //   }
+  // }
   async placeOrder(orderParams) {
     try {
-      const response = await this.client.post('/orders/regular', {
+      const payload = {
         exchange: orderParams.exchange,
         tradingsymbol: orderParams.symbol,
         transaction_type: orderParams.transactionType,
@@ -53,7 +78,30 @@ class KiteClient {
         validity: orderParams.validity || 'DAY',
         disclosed_quantity: 0,
         tag: orderParams.tag || 'TradingEngine',
-      });
+      };
+
+      if (orderParams.orderType === 'LIMIT' && orderParams.price != null) {
+        payload.price = orderParams.price;
+      }
+
+      // Include trigger_price only if required
+      if (
+        (orderParams.orderType === 'SL' ||
+        orderParams.orderType === 'SL-M') &&
+        orderParams.triggerPrice != null
+      ) {
+        payload.trigger_price = orderParams.triggerPrice;
+      }
+
+      const response = await this.client.post(
+        '/orders/regular',
+        qs.stringify(payload),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
 
       return response.data;
     } catch (error) {

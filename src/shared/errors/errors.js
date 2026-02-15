@@ -69,6 +69,14 @@ class OrderExecutionError extends AppError {
   }
 }
 
+
+class BrokerAuthError extends AppError {
+  constructor(message = 'Broker session expired or invalid', code = 'BROKER_SESSION_EXPIRED', details = null) {
+    super(message, 401, code);
+    this.details = details;
+  }
+}
+
 module.exports = {
   AppError,
   BadRequestError,
@@ -82,4 +90,5 @@ module.exports = {
   RiskViolationError,
   KillSwitchError,
   OrderExecutionError,
+  BrokerAuthError
 };

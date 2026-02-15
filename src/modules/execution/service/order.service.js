@@ -8,6 +8,7 @@ const {
   BadRequestError,
   OrderExecutionError,
   ForbiddenError,
+  BrokerAuthError
 } = require('../../../shared/errors');
 const { SYSTEM, ORDER } = require('../../../shared/constants');
 const { Op } = require('sequelize');
@@ -101,6 +102,11 @@ class OrderService {
       };
 
     } catch (error) {
+            
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+      
       logger.error('Error getting orders:', error);
       throw error;
     }
@@ -177,6 +183,11 @@ class OrderService {
       };
 
     } catch (error) {
+            
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+
       logger.error('Error getting order by ID:', error);
       throw error;
     }
@@ -260,6 +271,11 @@ class OrderService {
       };
 
     } catch (error) {
+      
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+
       logger.error('Error cancelling order:', error);
       throw error;
     }
@@ -333,6 +349,11 @@ class OrderService {
       };
 
     } catch (error) {
+      
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+
       logger.error('Error getting order statistics:', error);
       throw error;
     }
@@ -364,6 +385,11 @@ class OrderService {
       };
 
     } catch (error) {
+
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+
       logger.error('Error getting positions:', error);
       throw error;
     }
@@ -395,6 +421,11 @@ class OrderService {
       };
 
     } catch (error) {
+      
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+
       logger.error('Error getting holdings:', error);
       throw error;
     }
@@ -426,6 +457,11 @@ class OrderService {
       };
 
     } catch (error) {
+
+      if (error.response?.status === 403) {
+        throw new BrokerAuthError();
+      }
+
       logger.error('Error getting margins:', error);
       throw error;
     }
