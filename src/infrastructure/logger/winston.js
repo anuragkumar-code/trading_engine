@@ -5,28 +5,84 @@ const config = require('../../shared/config');
 
 const logDir = path.resolve(process.cwd(), config.app.logging.dir);
 
-// Define log format
+/**
+ * Safe JSON stringify to prevent circular structure crashes
+ */
+function safeStringify(obj) {
+  const seen = new WeakSet();
+
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return '[Circular]';
+      }
+      seen.add(value);
+    }
+    return value;
+  });
+}
+
+/**
+ * Normalize meta object before logging
+ * Prevents logging huge or circular axios objects
+ */
+function normalizeMeta(meta) {
+  if (!meta || typeof meta !== 'object') return meta;
+
+  // Axios error detection
+  if (meta.isAxiosError) {
+    return {
+      message: meta.message,
+      status: meta.response?.status,
+      data: meta.response?.data,
+      url: meta.config?.url,
+      method: meta.config?.method,
+    };
+  }
+
+  return meta;
+}
+
+// JSON format for file logs
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
   winston.format.splat(),
-  winston.format.json()
+  winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
+    const normalized = normalizeMeta(meta);
+
+    return safeStringify({
+      timestamp,
+      level,
+      message,
+      stack,
+      ...normalized,
+    });
+  })
 );
 
 // Console format for development
 const consoleFormat = winston.format.combine(
   winston.format.colorize(),
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.printf(({ timestamp, level, message, ...meta }) => {
+  winston.format.errors({ stack: true }),
+  winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
     let msg = `${timestamp} [${level}]: ${message}`;
-    if (Object.keys(meta).length > 0) {
-      msg += ` ${JSON.stringify(meta)}`;
+
+    if (stack) {
+      msg += `\n${stack}`;
     }
+
+    const normalized = normalizeMeta(meta);
+
+    if (Object.keys(normalized || {}).length > 0) {
+      msg += ` ${safeStringify(normalized)}`;
+    }
+
     return msg;
   })
 );
 
-// Create transports
 const transports = [];
 
 // Console transport
@@ -59,15 +115,12 @@ transports.push(
   })
 );
 
-// Create logger
 const logger = winston.createLogger({
   level: config.app.logging.level,
-  format: logFormat,
   transports,
   exitOnError: false,
 });
 
-// Stream for Morgan
 logger.stream = {
   write: (message) => {
     logger.info(message.trim());
